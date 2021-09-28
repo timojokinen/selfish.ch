@@ -1,18 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { CommandLineInput } from './CommandLineInput';
 import { useTerminalContext } from './TerminalProvider';
 
 export const Terminal = () => {
-  const { cwd, ctx, output, runCommand } = useTerminalContext();
-  const [input, setInput] = useState('');
+  const { cwd, ctx, output, runCommand, status } = useTerminalContext();
 
   const commandInputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
-
-  const handleCommand = async (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-    runCommand(input);
-    setInput('');
-  };
 
   useEffect(() => {
     if (terminalRef && terminalRef.current) {
@@ -34,27 +28,7 @@ export const Terminal = () => {
       </div>
       <div className="overflow-y-scroll flex-auto items-start p-4 font-mono text-white bg-[#0d0e0f]" ref={terminalRef}>
         <div>{output}</div>
-        <div className="flex items-center">
-          <div className="select-none">
-            <span className="font-bold text-green-500">
-              {ctx.username}@{ctx.hostname}
-            </span>
-            :<span className="font-bold text-blue-500">{cwd}</span>$
-          </div>
-          {
-            <form onSubmit={handleCommand} className="flex-auto">
-              <input
-                name="command"
-                type="text"
-                value={input}
-                onChange={(evt: React.ChangeEvent<HTMLInputElement>) => setInput(evt.currentTarget.value)}
-                ref={commandInputRef}
-                autoComplete="off"
-                className="inline-block pl-2 w-full bg-transparent outline-none"
-              />
-            </form>
-          }
-        </div>
+        {status === 'idle' && <CommandLineInput ctx={ctx} cwd={cwd} onSubmit={runCommand} />}
       </div>
     </div>
   );

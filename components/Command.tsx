@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useCommand } from '../hooks/useCommand';
 import { TerminalCtx } from '../lib/terminal';
 
@@ -5,10 +6,18 @@ type Props = {
   input: string;
   ctx: TerminalCtx;
   cwd: string;
+  onComplete?: (processId: string) => void;
+  processId: string;
 };
 
-export const Command = ({ ctx, input, cwd }: Props) => {
-  const { command, output } = useCommand(input);
+export const Command = ({ ctx, input, cwd, onComplete, processId }: Props) => {
+  const handleComplete = useCallback(() => {
+    if (onComplete) {
+      onComplete(processId);
+    }
+  }, [processId, onComplete]);
+
+  const { command, output } = useCommand(input, handleComplete);
 
   return (
     <div>

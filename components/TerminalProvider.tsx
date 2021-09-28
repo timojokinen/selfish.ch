@@ -1,12 +1,13 @@
 import React from 'react';
 import { useTerminal } from '../hooks/useTerminal';
-import { TerminalCtx } from '../lib/terminal';
+import { TerminalCtx, TerminalStatus } from '../lib/terminal';
 
 type TerminalContextValue = {
   runCommand: (input: string) => void;
   ctx: TerminalCtx;
   cwd: string;
   output: React.ReactNode[];
+  status: TerminalStatus;
 };
 
 export const TerminalContext = React.createContext<TerminalContextValue | undefined>(undefined);

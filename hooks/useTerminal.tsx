@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Command } from '../components/Command';
-import { parseArgs, TerminalCtx } from '../lib/terminal';
+import { TerminalCtx, TerminalStatus } from '../lib/terminal';
 
 export const useTerminal = () => {
   const [ctx, setCtx] = useState<TerminalCtx>({
@@ -9,10 +9,24 @@ export const useTerminal = () => {
   });
   const [cwd, setCwd] = useState('~');
   const [output, setOutput] = useState<React.ReactNode[]>([]);
+  const [processes, setProcesses] = useState<string[]>([]);
+  const status = useMemo<TerminalStatus>(() => (processes.length > 0 ? 'processing' : 'idle'), [processes]);
 
-  const runCommand = (input: string): void => {
-    setOutput((o) => [...o, <Command key={new Date().getTime()} input={input} ctx={ctx} cwd={cwd} />]);
-  };
+  const runCommand = useCallback(
+    (input: string): void => {
+      const processId = Math.random().toString(16).slice(2);
+      setProcesses((prev) => [...prev, processId]);
+      const handleComplete = (id: string) => {
+        setProcesses((prev) => prev.filter((process) => process !== id));
+      };
 
-  return { runCommand, cwd, ctx, output };
+      setOutput((o) => [
+        ...o,
+        <Command key={processId} processId={processId} input={input} ctx={ctx} cwd={cwd} onComplete={handleComplete} />,
+      ]);
+    },
+    [ctx, cwd],
+  );
+
+  return { runCommand, cwd, ctx, output, status };
 };

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type CommandArgs = Map<string, string | string[]>;
 
 export type TerminalCtx = {
@@ -7,18 +5,23 @@ export type TerminalCtx = {
   hostname: string;
 };
 
-export type LogRecord = {
-  ctx: TerminalCtx;
-  timestamp: Date;
-  input?: string;
-  output?: string | React.ReactNode;
-};
+export type TerminalStatus = 'idle' | 'processing';
 
+/**
+ * Removes all trailing dashes from string
+ * @param flag
+ * @returns Sanitized string
+ */
 export const sanitizeFlag = (flag: string): string => {
   const re = new RegExp(/-+?/, 'g');
   return flag.replace(re, '');
 };
 
+/**
+ * Creates a new argument map object for easier access
+ * @param args
+ * @returns
+ */
 export const parseArgs = (args: string[]): CommandArgs => {
   let internalArgs = [...args];
   if (internalArgs.length === 0) {
