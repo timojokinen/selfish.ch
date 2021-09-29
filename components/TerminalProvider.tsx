@@ -8,6 +8,7 @@ type TerminalContextValue = {
   cwd: string;
   output: React.ReactNode[];
   status: TerminalStatus;
+  setCwd: (path: string) => void;
 };
 
 export const TerminalContext = React.createContext<TerminalContextValue | undefined>(undefined);

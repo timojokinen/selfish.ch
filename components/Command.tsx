@@ -17,8 +17,6 @@ export const Command = ({ ctx, input, cwd, onComplete, processId }: Props) => {
     }
   }, [processId, onComplete]);
 
-  const { command, output } = useCommand(input, handleComplete);
-
   return (
     <div>
       <div className="flex select-none">
@@ -28,9 +26,9 @@ export const Command = ({ ctx, input, cwd, onComplete, processId }: Props) => {
           </span>
           :<span className="font-bold text-blue-500">{cwd}</span>$
         </span>
-        <span>{command}</span>
+        <span>{input}</span>
       </div>
-      {output}
+      {useCommand(input, ctx, cwd, handleComplete)}
     </div>
   );
 };

@@ -7,9 +7,9 @@ export const useTerminal = () => {
     username: 'selfish',
     hostname: 'kali',
   });
-  const [cwd, setCwd] = useState('~');
   const [output, setOutput] = useState<React.ReactNode[]>([]);
   const [processes, setProcesses] = useState<string[]>([]);
+  const [cwd, setCwd] = useState('/home');
   const status = useMemo<TerminalStatus>(() => (processes.length > 0 ? 'processing' : 'idle'), [processes]);
 
   const runCommand = useCallback(
@@ -28,5 +28,5 @@ export const useTerminal = () => {
     [ctx, cwd],
   );
 
-  return { runCommand, cwd, ctx, output, status };
+  return { runCommand, cwd, ctx, output, status, setCwd };
 };
